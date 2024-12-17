@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="budget.manager.app.forms.CategoryCreator">
+  <grid id="27dc6" binding="jMainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <background color="-1"/>
+      <preferredSize width="300" height="300"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="bf6ec" class="javax.swing.JLabel">
+        <constraints border-constraint="North"/>
+        <properties>
+          <background color="-1"/>
+          <font name="Arial" size="22" style="1"/>
+          <foreground color="-12368567"/>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <text value="Category"/>
+        </properties>
+      </component>
+      <component id="bcf78" class="javax.swing.JButton" binding="createCategoryButton">
+        <constraints border-constraint="South"/>
+        <properties>
+          <alignmentX value="0.5"/>
+          <background color="-1650774"/>
+          <borderPainted value="false"/>
+          <contentAreaFilled value="true"/>
+          <defaultCapable value="false"/>
+          <focusPainted value="false"/>
+          <focusable value="false"/>
+          <font name="Arial" size="16" style="0"/>
+          <foreground color="-12368567"/>
+          <opaque value="true"/>
+          <requestFocusEnabled value="false"/>
+          <rolloverEnabled value="true"/>
+          <text value="Create Category"/>
+          <verifyInputWhenFocusTarget value="true"/>
+        </properties>
+      </component>
+      <grid id="f1379" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="East"/>
+        <properties>
+          <background color="-3364123"/>
+          <minimumSize width="20" height="0"/>
+          <preferredSize width="30" height="-1"/>
+        </properties>
+        <border type="empty"/>
+        <children/>
+      </grid>
+      <grid id="11ddd" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="West"/>
+        <properties>
+          <background color="-3364123"/>
+          <minimumSize width="20" height="0"/>
+          <preferredSize width="30" height="-1"/>
+        </properties>
+        <border type="empty"/>
+        <children/>
+      </grid>
+      <grid id="7cd55" binding="jPanelCreateTra" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="10" vgap="10">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="Center"/>
+        <properties>
+          <background color="-1"/>
+          <font name="Arial" size="16" style="0"/>
+          <foreground color="-12368567"/>
+          <minimumSize width="300" height="260"/>
+          <preferredSize width="301" height="280"/>
+        </properties>
+        <border type="line">
+          <color color="-12368567"/>
+        </border>
+        <children>
+          <grid id="4214a" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-1"/>
+            </properties>
+            <border type="empty"/>
+            <children>
+              <grid id="2ad5" binding="jPanelCategory" layout-manager="FlowLayout" hgap="10" vgap="10" flow-align="0">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="60"/>
+                    <preferred-size width="-1" height="60"/>
+                    <maximum-size width="-1" height="60"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <alignmentY value="0.5"/>
+                  <background color="-1"/>
+                </properties>
+                <border type="empty"/>
+                <children>
+                  <component id="bbd4a" class="javax.swing.JLabel" binding="categoryNameLabel">
+                    <constraints/>
+                    <properties>
+                      <font name="Arial" size="16" style="0"/>
+                      <foreground color="-12368567"/>
+                      <text value="Name: "/>
+                    </properties>
+                    <clientProperties>
+                      <html.disable class="java.lang.Boolean" value="false"/>
+                    </clientProperties>
+                  </component>
+                  <component id="16e" class="javax.swing.JTextField" binding="textFieldCatName">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <font name="Arial" size="16" style="0"/>
+                      <minimumSize width="100" height="34"/>
+                      <preferredSize width="120" height="34"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="7cd81" binding="jPanelRButtonInc" layout-manager="FlowLayout" hgap="10" vgap="10" flow-align="0">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="60"/>
+                    <preferred-size width="-1" height="60"/>
+                    <maximum-size width="-1" height="60"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <alignmentY value="0.5"/>
+                  <background color="-1"/>
+                </properties>
+                <border type="empty"/>
+                <children>
+                  <component id="b01c1" class="javax.swing.JRadioButton" binding="radioButtonIsInc">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <font name="Arial" size="16" style="0"/>
+                      <horizontalAlignment value="0"/>
+                      <horizontalTextPosition value="10"/>
+                      <text value="Is Income"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="7f6fe" binding="jPanelRButtonExp" layout-manager="FlowLayout" hgap="10" vgap="10" flow-align="0">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="60"/>
+                    <preferred-size width="-1" height="60"/>
+                    <maximum-size width="-1" height="60"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <alignmentY value="0.5"/>
+                  <background color="-1"/>
+                </properties>
+                <border type="empty"/>
+                <children>
+                  <component id="8771f" class="javax.swing.JRadioButton" binding="radioButtonIsExp">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <font name="Arial" size="16" style="0"/>
+                      <horizontalAlignment value="0"/>
+                      <horizontalTextPosition value="10"/>
+                      <text value="Is Expense"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="buttonGroupCat">
+      <member id="b01c1"/>
+      <member id="b01c1"/>
+      <member id="8771f"/>
+    </group>
+  </buttonGroups>
+</form>
