@@ -1,12 +1,12 @@
 package budget.manager.app.models;
 
 public class FactoryProducer {
-    public static AbstractFactory getFactory(String fileName) {
-        if (fileName.contains("users")) {
+    public static AbstractFactory getFactory(String factoryType) {
+        if (factoryType.toLowerCase().contains("users")) {
             return new UserFactory();
-        } else if (fileName.contains("transactions")) {
+        } else if (factoryType.toLowerCase().contains("transactions")) {
             return new TransactionFactory();
-        } else if (fileName.contains("categories")) {
+        } else if (factoryType.toLowerCase().contains("categories")) {
             return new CategoryFactory();
         }
 

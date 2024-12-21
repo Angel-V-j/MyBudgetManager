@@ -2,6 +2,10 @@ package budget.manager.app.models;
 
 import budget.manager.app.managers.SessionManager;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -10,12 +14,13 @@ import static budget.manager.app.util.DateUtil.stringToDate;
 public class TransactionFactory extends AbstractFactory<Transaction> {
 
     @Override
-    public Transaction create(int id, int userId, int categoryId, double amount, LocalDate date, String info){
+    public Transaction create(int id, int userId, int categoryId, double amount, String currency, LocalDate date, String info){
         Transaction transaction = new Transaction();
         transaction.setId(id);
         transaction.setUserId(userId);
         transaction.setCategoryId(categoryId);
         transaction.setAmount(amount);
+        transaction.setCurrency(Currency.valueOf(currency));
         transaction.setLocalDate(date);
         transaction.setDescription(info);
         return transaction;
@@ -32,13 +37,14 @@ public class TransactionFactory extends AbstractFactory<Transaction> {
             int userId = Integer.parseInt(fields[1]);
             int categoryId = Integer.parseInt(fields[2]);
             double amount = Double.parseDouble(fields[3]);
-            LocalDate date = stringToDate(fields[4]);
+            String currency = fields[4];
+            LocalDate date = stringToDate(fields[5]);
             String info = "";
             if (!csvLine.endsWith(",")) {
-                info = fields[5];
+                info = fields[6];
             }
 
-            return create(id, userId, categoryId, amount, date, info);
+            return create(id, userId, categoryId, amount, currency, date, info);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -46,7 +52,19 @@ public class TransactionFactory extends AbstractFactory<Transaction> {
     }
 
     @Override
-    public User create(int id, String username, String password, Currency currency) {
+    public Transaction createFromRSet(ResultSet resultSet) throws SQLException {
+        return create(
+                resultSet.getInt("id"),
+                resultSet.getInt("user_id"),
+                resultSet.getInt("category_id"),
+                resultSet.getDouble("amount"),
+                resultSet.getString("currency"),
+                resultSet.getDate("date").toLocalDate(),
+                resultSet.getString("description"));
+    }
+
+    @Override
+    public User create(int id, String username, String password, String currency) {
         return null;
     }
 

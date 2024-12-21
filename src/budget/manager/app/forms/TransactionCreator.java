@@ -63,7 +63,7 @@ public class TransactionCreator extends JFrame {
                 localDate = getDate();
                 Category category = (Category) categoryPicker.getSelectedItem();
                 try {
-                    createTransactionButtonActionPerformed(updateTransaction(transaction, new TransactionFactory().create(transaction.getId(), transaction.getUserId(),
+                    createTransactionButtonActionPerformed(editTransaction(transaction, new TransactionFactory().create(transaction.getId(), transaction.getUserId(),
                                     category.getId(),
                                     Double.parseDouble(textFAmount.getText()),
                                     localDate, textAreaDescription.getText())),

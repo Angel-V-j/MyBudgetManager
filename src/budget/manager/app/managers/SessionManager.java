@@ -9,8 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static budget.manager.app.controllers.CategoryController.getCategories;
-import static budget.manager.app.controllers.TransactionController.getTransactions;
+
+import static budget.manager.app.controllers.CategoryController.loadCategoriesToList;
+import static budget.manager.app.controllers.TransactionController.loadTransactionsToList;
 import static budget.manager.app.controllers.UserController.*;
 
 public class SessionManager {
@@ -20,7 +21,6 @@ public class SessionManager {
     private ArrayList<Category> userCategories;
 
     private SessionManager() {
-        getCategories().addAll(setDefaultCategories());
     }
 
     public static SessionManager getInstance() {
@@ -35,10 +35,8 @@ public class SessionManager {
         currentUser = searchUserByUsername(username);
         if (currentUser != null) {
             if(currentUser.getPassword().equals(password)){
-                userTransactions = new ArrayList<>();
-                userCategories = new ArrayList<>();
-                reloadUserCategories();
-                reloadUserTransactions();
+                userTransactions = loadTransactionsToList();
+                userCategories = loadCategoriesToList();
                 return true;
             }
         }
@@ -62,23 +60,6 @@ public class SessionManager {
 
     public List<Category> getUserCategories() {
         return userCategories;
-    }
-
-    public boolean reloadUserTransactions() {
-        userTransactions = getTransactions().stream()
-                .filter(tra -> tra.getUserId() == currentUser.getId())
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return userTransactions != null;
-    }
-
-    public boolean reloadUserCategories() {
-        userCategories = getCategories().stream()
-                .filter(category -> category.getUserId() == currentUser.getId() ||
-                        category.getUserId() == -1)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return userCategories != null;
     }
 
     private ArrayList<Category> setDefaultCategories() {

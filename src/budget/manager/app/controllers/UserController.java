@@ -1,71 +1,122 @@
 package budget.manager.app.controllers;
 
-import budget.manager.app.managers.CSVReader;
-import budget.manager.app.managers.CSVWriter;
+import budget.manager.app.managers.DatabaseManager;
+import budget.manager.app.managers.SessionManager;
+import budget.manager.app.models.TransactionFactory;
+import budget.manager.app.services.csv.CSVReader;
+import budget.manager.app.services.csv.CSVWriter;
 import budget.manager.app.models.Currency;
 import budget.manager.app.models.User;
 import budget.manager.app.models.UserFactory;
 
-import java.util.List;
-
-import static budget.manager.app.util.FileUtil.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserController {
-    private static List<User> users = new CSVReader().read(getTextFilePath(USERS_FILE_NAME),USERS_FILE_NAME);
 
-    public static List<User> getUsers() {
-        return users;
+    public static boolean addUser(String username, String password, Currency currency) {
+        String query = "INSERT INTO transactions (username, user_password, currency) " +
+                "VALUES (?, ?, ?)";
+
+        try (PreparedStatement preparedStatement =
+                     DatabaseManager.getInstance().getConnection().prepareStatement(query)){
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, String.valueOf(currency));
+            if (preparedStatement.executeUpdate() > 0)
+                return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     public static boolean addUser(User user) {
-        return users.add(user);
+        return addUser(user.getUsername(), user.getPassword(), user.getCurrency());
     }
 
-    public static boolean addUser(String username, String password, Currency currency) {
-        return users.add(new UserFactory().create(getUniqueId(users), username, password, currency));
+    private static boolean editUser(User user, String column, String value) {
+        String query = "UPDATE transactions " +
+                "SET " + column + " = ? " +
+                "WHERE id = ?";
+
+        try (PreparedStatement preparedStatement =
+                     DatabaseManager.getInstance().getConnection().prepareStatement(query)){
+            preparedStatement.setString(1, value);
+            preparedStatement.setInt(2, user.getId());
+            if (preparedStatement.executeUpdate() > 0)
+                return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     public static boolean editUser(User user, char[] password) {
-        if (user != null) {
-            user.setPassword(String.valueOf(password));
-            return true;
-        }
-
-        return false;
+        return editUser(user,"user_password", String.valueOf(password));
     }
 
     public static boolean editUser(User user, Currency currency) {
-        if (user != null) {
-            user.setCurrency(currency);
-            return true;
+        return editUser(user,"currency", String.valueOf(currency));
+    }
+
+    public static boolean removeUser(User user) {
+        String query = "DELETE FROM users " +
+                "WHERE id = ?";
+
+        try (Connection connection = DatabaseManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, user.getId());
+            if (preparedStatement.executeUpdate() > 0)
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return false;
     }
 
-    public static boolean removeUser(User user) {
-        return users.remove(user);
-    }
-
-    public static void saveUsers() {
-        new CSVWriter().write(getUsers(), getTextFilePath(USERS_FILE_NAME));
-    }
-
-    public static User searchUserById(int id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-
-        return null;
-    }
+//    public static User searchUserById(int id) {
+//        String query = "SELECT * " +
+//                "FROM users " +
+//                "WHERE id = ?";
+//
+//        try (Connection connection = DatabaseManager.getInstance().getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+//            preparedStatement.setInt(1, SessionManager.getInstance().getCurrentUser().getId());
+//
+//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//                if (resultSet.next())
+//                    return new UserFactory().createFromRSet(resultSet);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
     public static User searchUserByUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
+        String query = "SELECT * " +
+                "FROM users " +
+                "WHERE username = ?";
+
+        try (Connection connection = DatabaseManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next())
+                    return new UserFactory().createFromRSet(resultSet);
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return null;

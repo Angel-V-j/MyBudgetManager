@@ -12,6 +12,7 @@ public class Transaction implements Serializable {
     private int userId;
     private int categoryId;
     private double amount;
+    private Currency currency;
     private LocalDate date;
     private String description;
 
@@ -68,6 +69,14 @@ public class Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH,"%d,%d,%d,%.2f,%s,%s", id, userId, categoryId, amount, dateToString(date), description);
+        return String.format(Locale.ENGLISH, "%d,%d,%d,%.2f,%s,%s", id, userId, categoryId, amount, dateToString(date), description);
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

@@ -1,5 +1,8 @@
 package budget.manager.app.models;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CategoryFactory extends AbstractFactory<Category>{
@@ -37,12 +40,21 @@ public class CategoryFactory extends AbstractFactory<Category>{
     }
 
     @Override
-    public User create(int id, String username, String password, Currency currency) {
+    public Category createFromRSet(ResultSet resultSet) throws SQLException {
+        return create(resultSet.getInt("id"),
+                resultSet.getInt("user_id"),
+                resultSet.getString("name"),
+                resultSet.getBoolean("is_income"));
+    }
+
+
+    @Override
+    public User create(int id, String username, String password, String currency) {
         return null;
     }
 
     @Override
-    public Transaction create(int id, int userId, int categoryId, double amount, LocalDate date, String info) {
+    public Transaction create(int id, int userId, int categoryId, double amount, String currency, LocalDate date, String info) {
         return null;
     }
 }
