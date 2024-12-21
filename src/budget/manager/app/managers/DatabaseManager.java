@@ -15,6 +15,7 @@ public class DatabaseManager {
             connection.createStatement().execute(createUserTableQuery());
             connection.createStatement().execute(createCategoryTableQuery());
             connection.createStatement().execute(createTransactionTableQuery());
+            connection.createStatement().execute(fillDefaultCategories());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -70,6 +71,37 @@ public class DatabaseManager {
                                     FOREIGN KEY (category_id)
                                         REFERENCES categories (id)
                                 );
+                """;
+    }
+
+    private String fillDefaultCategories() {
+        return """
+                DELIMITER $$
+                
+                CREATE PROCEDURE InitializeCategories()
+                BEGIN
+                    IF (SELECT COUNT(*) FROM categories) = 0 THEN
+                        INSERT INTO categories (user_id, name, is_income)
+                        VALUES
+                            (-1, 'Salary', 1),
+                            (-1, 'Bonus', 1),
+                            (-1, 'Investments', 1),
+                            (-1, 'Government Benefits', 1),
+                            (-1, 'Gifts', 1),
+                            (-1, 'Food & Groceries', 0),
+                            (-1, 'Rent/Mortgage', 0),
+                            (-1, 'Utilities', 0),
+                            (-1, 'Cloths', 0),
+                            (-1, 'Entertainment', 0),
+                            (-1, 'Insurance', 0),
+                            (-1, 'Debt Payment', 0),
+                            (-1, 'HealthCare', 0);
+                    END IF;
+                END$$
+                
+                DELIMITER ;
+                
+                CALL InitializeCategories();
                 """;
     }
 
