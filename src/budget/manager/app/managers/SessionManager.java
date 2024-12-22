@@ -1,14 +1,9 @@
 package budget.manager.app.managers;
 import budget.manager.app.models.Category;
-import budget.manager.app.models.CategoryFactory;
 import budget.manager.app.models.Transaction;
 import budget.manager.app.models.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 import static budget.manager.app.controllers.CategoryController.loadCategoriesToList;
 import static budget.manager.app.controllers.TransactionController.loadTransactionsToList;

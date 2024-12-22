@@ -1,6 +1,5 @@
 package budget.manager.app.forms;
 
-import budget.manager.app.managers.SessionManager;
 import budget.manager.app.models.*;
 
 import javax.swing.*;

@@ -1,7 +1,5 @@
 package budget.manager.app.forms;
 
-import budget.manager.app.controllers.CategoryController;
-import budget.manager.app.controllers.TransactionController;
 import budget.manager.app.services.csv.CSVReader;
 import budget.manager.app.services.csv.CSVWriter;
 import budget.manager.app.managers.SessionManager;
@@ -105,16 +103,6 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
         initMenu();
         initSession(currentUser);
-
-//        this.addComponentListener(new ComponentAdapter() {
-//            @Override
-//            public void componentHidden(ComponentEvent e) {
-//                saveTransactions();
-//                saveCategories();
-//                saveUsers();
-//                ((JFrame)e.getComponent()).dispose();
-//            }
-//        });
 
         jPanelTransaction2.addComponentListener(new ComponentAdapter() {
             @Override

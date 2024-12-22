@@ -1,10 +1,6 @@
 package budget.manager.app.controllers;
 
 import budget.manager.app.managers.DatabaseManager;
-import budget.manager.app.models.Transaction;
-import budget.manager.app.models.TransactionFactory;
-import budget.manager.app.services.csv.CSVReader;
-import budget.manager.app.services.csv.CSVWriter;
 import budget.manager.app.managers.SessionManager;
 import budget.manager.app.models.Category;
 import budget.manager.app.models.CategoryFactory;
@@ -69,23 +65,6 @@ public class CategoryController {
         return removeCategory(id);
     }
 
-//    public static boolean removeCategory(String categoryName, List<Category> categories) {
-//        categories.removeIf(category -> category.getName().equals(categoryName));
-//
-//        String query = "DELETE FROM categories " +
-//                "WHERE name = ?";
-//
-//        try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)){
-//            preparedStatement.setString(1, categoryName);
-//            if (preparedStatement.executeUpdate() > 0)
-//                return true;
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return false;
-//    }
-
     public static void deleteUserCategories(List<Category> categories) {
         for (Category category : categories) {
             removeCategory(category.getId());
@@ -108,24 +87,6 @@ public class CategoryController {
     }
 
     public static Category searchCategoryById(List<Category> categories, int id) {
-//        String query = "SELECT username FROM categories WHERE id = ?";
-//
-//        try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)) {
-//
-//            preparedStatement.setInt(1, id);
-//
-//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    String username = resultSet.getObject("username").toString();
-//                    System.out.println("Username: " + username);
-//                } else {
-//                    System.out.println("No user found with ID: " + userId);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         for (Category category : categories) {
             if (category.getId() == id) {
                 return category;

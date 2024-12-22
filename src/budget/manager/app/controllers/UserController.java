@@ -2,9 +2,6 @@ package budget.manager.app.controllers;
 
 import budget.manager.app.managers.DatabaseManager;
 import budget.manager.app.managers.SessionManager;
-import budget.manager.app.models.TransactionFactory;
-import budget.manager.app.services.csv.CSVReader;
-import budget.manager.app.services.csv.CSVWriter;
 import budget.manager.app.models.Currency;
 import budget.manager.app.models.User;
 import budget.manager.app.models.UserFactory;

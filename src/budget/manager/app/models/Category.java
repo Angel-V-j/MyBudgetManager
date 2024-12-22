@@ -10,7 +10,6 @@ public class Category implements Serializable {
     private boolean isIncome;
 
     public Category() {
-
     }
 
     public int getId() {

@@ -3,7 +3,6 @@ package budget.manager.app.managers;
 import java.sql.*;
 
 import static budget.manager.app.services.db.DatabaseInitializer.initDb;
-import static budget.manager.app.util.SqlUtil.*;
 
 public class DatabaseManager {
     private static DatabaseManager instance;
