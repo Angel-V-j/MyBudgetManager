@@ -9,7 +9,7 @@ import static budget.manager.app.util.DateUtil.dateToString;
 
 public class TransactionTableModel extends AbstractTableModel {
 
-    private final String[] columnNames = {"Id", "CategoryId", "Category", "Amount", "Date", "Description"};
+    private final String[] columnNames = {"Id", "Category", "Amount", "Currency", "Date", "Description"};
 
     public TransactionTableModel() {}
 
@@ -28,9 +28,10 @@ public class TransactionTableModel extends AbstractTableModel {
         Transaction transaction = SessionManager.getInstance().getUserTransactions().get(rowIndex);
         return switch (columnIndex) {
             case 0 -> transaction.getId();
-            case 1 -> transaction.getCategoryId();
-            case 2 -> searchCategoryById(SessionManager.getInstance().getUserCategories(), transaction.getCategoryId()).getName();
-            case 3 -> transaction.getAmount();
+            case 1 -> transaction.getCategoryId() + "-" +
+                    searchCategoryById(SessionManager.getInstance().getUserCategories(), transaction.getCategoryId()).getName();
+            case 2 -> transaction.getAmount();
+            case 3 -> transaction.getCurrency().name();
             case 4 -> dateToString(transaction.getLocalDate());
             case 5 -> transaction.getDescription();
             default -> null;

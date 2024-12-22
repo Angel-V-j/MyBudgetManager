@@ -60,12 +60,39 @@ public class CategoryController {
     }
 
     public static boolean removeCategory(Category category, List<Category> categories) {
+        categories.remove(category);
         return removeCategory(category.getId(), categories);
     }
 
     public static boolean removeCategory(int id, List<Category> categories) {
         categories.removeIf(category -> category.getId() == id);
+        return removeCategory(id);
+    }
 
+//    public static boolean removeCategory(String categoryName, List<Category> categories) {
+//        categories.removeIf(category -> category.getName().equals(categoryName));
+//
+//        String query = "DELETE FROM categories " +
+//                "WHERE name = ?";
+//
+//        try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)){
+//            preparedStatement.setString(1, categoryName);
+//            if (preparedStatement.executeUpdate() > 0)
+//                return true;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return false;
+//    }
+
+    public static void deleteUserCategories(List<Category> categories) {
+        for (Category category : categories) {
+            removeCategory(category.getId());
+        }
+    }
+
+    private static boolean removeCategory(int id) {
         String query = "DELETE FROM categories " +
                 "WHERE id = ?";
 
@@ -79,27 +106,6 @@ public class CategoryController {
 
         return false;
     }
-
-    public static boolean removeCategory(String categoryName, List<Category> categories) {
-        categories.removeIf(category -> category.getName().equals(categoryName));
-
-        String query = "DELETE FROM categories " +
-                "WHERE name = ?";
-
-        try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)){
-            preparedStatement.setString(1, categoryName);
-            if (preparedStatement.executeUpdate() > 0)
-                return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return false;
-    }
-
-//    public static boolean removeCategoriesOfUser(int userId) {
-//        return categories.removeIf(category -> category.getUserId() == userId);
-//    }
 
     public static Category searchCategoryById(List<Category> categories, int id) {
 //        String query = "SELECT username FROM categories WHERE id = ?";
@@ -172,7 +178,8 @@ public class CategoryController {
 
     public static ArrayList<Category> loadCategoriesToList() {
         ArrayList<Category> categories = new ArrayList<>();
-        String query = "SELECT * FROM categories WHERE user_id = ?";
+        String query = "SELECT * FROM categories " +
+                "WHERE user_id = ? OR user_id = -1";
 
         try (Connection connection = DatabaseManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

@@ -23,7 +23,6 @@ import static budget.manager.app.controllers.TransactionController.*;
 import static budget.manager.app.controllers.UserController.*;
 import static budget.manager.app.util.BalanceUtil.*;
 import static budget.manager.app.util.DateUtil.stringToDate;
-import static budget.manager.app.util.FileUtil.getUniqueId;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -101,21 +100,21 @@ public class Main extends JFrame {
         User currentUser = SessionManager.getInstance().getCurrentUser();
         setContentPane(jMainPanel);
         setTitle("Budget Management");
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(750,450);
         setLocationRelativeTo(null);
         initMenu();
         initSession(currentUser);
 
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                saveTransactions();
-                saveCategories();
-                saveUsers();
-                ((JFrame)e.getComponent()).dispose();
-            }
-        });
+//        this.addComponentListener(new ComponentAdapter() {
+//            @Override
+//            public void componentHidden(ComponentEvent e) {
+//                saveTransactions();
+//                saveCategories();
+//                saveUsers();
+//                ((JFrame)e.getComponent()).dispose();
+//            }
+//        });
 
         jPanelTransaction2.addComponentListener(new ComponentAdapter() {
             @Override
@@ -171,8 +170,6 @@ public class Main extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(button.getName().endsWith("0")){
-                        TransactionController.saveTransactions();
-                        CategoryController.saveCategories();
                         SessionManager.getInstance().logout();
                         new Login();
                         dispose();
@@ -223,8 +220,8 @@ public class Main extends JFrame {
         createTransactionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new TransactionCreator(currentUser,
-                        (ArrayList<Category>) SessionManager.getInstance().getUserCategories(),
+                new TransactionCreator(currentUser, SessionManager.getInstance().getUserTransactions(),
+                        SessionManager.getInstance().getUserCategories(),
                         jTableTransactions);
             }
         });
@@ -253,8 +250,7 @@ public class Main extends JFrame {
                 Transaction transaction = new Transaction();
 
                 if ((transaction = checkIdTextBox(traId, transaction)) != null) {
-                    removeTransaction(transaction);
-                    saveTransactions();
+                    removeTransaction(transaction, SessionManager.getInstance().getUserTransactions());
                     jTableTransactions.setModel(new TransactionTableModel());
                     jTextFieldDeleteTra.setText("");
                 } else {
@@ -266,7 +262,7 @@ public class Main extends JFrame {
         createCategoryButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CategoryCreator();
+                new CategoryCreator(SessionManager.getInstance().getUserCategories());
             }
         });
 
@@ -295,8 +291,7 @@ public class Main extends JFrame {
 
                 if ((category = checkIdTextBox(catId, category)) != null) {
                     if (category.getUserId() == currentUser.getId()) {
-                        removeCategory(category);
-                        saveCategories();
+                        removeCategory(category, SessionManager.getInstance().getUserCategories());
                         jTextFieldDeleteCat.setText("");
                     }
                 } else {
@@ -351,7 +346,6 @@ public class Main extends JFrame {
                     if (String.valueOf(pass).equals(currentUser.getPassword())) {
                         if(Arrays.equals(newPass1,newPass2)){
                             if(editUser(SessionManager.getInstance().getCurrentUser(), newPass1)) {
-                                saveUsers();
                                 showMessageDialog(null, "You have successfully changed your password!");
                                 SessionManager.getInstance().logout();
                                 new Login();
@@ -376,7 +370,6 @@ public class Main extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (editUser(SessionManager.getInstance().getCurrentUser(),
                         Enum.valueOf(Currency.class, jComboBoxCurrency.getSelectedItem().toString()))) {
-                    saveUsers();
                     showMessageDialog(null, "Currencies have been changed!");
                 } else {
                     showMessageDialog(null, "Currencies don't have been changed!");
@@ -389,21 +382,18 @@ public class Main extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (showConfirmDialog(null, "This will delete your account and all your data!\nDo you want to proceed?",
                         "Delete Account",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    removeUser(currentUser);
-                    saveUsers();
-                    removeTransactionsOfUser(currentUser.getId());
-                    saveTransactions();
-                    removeCategoriesOfUser(currentUser.getId());
-                    saveCategories();
-                    SessionManager.getInstance().logout();
-                    dispose();
-                    new Login();
+                    if (removeUser(currentUser)) {
+                        SessionManager.getInstance().logout();
+                        dispose();
+                        new Login();
+                    } else {
+                        showMessageDialog(null, "Something went wrong!\nPlease try again!");
+                    }
                 }
             }
         });
 
         ActionListener importFile = e -> importData(((JButton) e.getSource()).getName());
-
 
         jButtonImportTra.addActionListener(importFile);
         jButtonImportCat.addActionListener(importFile);
@@ -455,13 +445,11 @@ public class Main extends JFrame {
                         getAbsolutePath(), importType);
                 for (Serializable serializable : list) {
                     if (serializable instanceof Transaction) {
-                        ((Transaction) serializable).setId(getUniqueId(getTransactions()));
                         ((Transaction) serializable).setUserId(SessionManager.getInstance().getCurrentUser().getId());
-                        addTransaction((Transaction) serializable, SessionManager);
+                        addTransaction((Transaction) serializable, SessionManager.getInstance().getUserTransactions());
                     } else if (serializable instanceof Category) {
-                        ((Category) serializable).setId(getUniqueId(getCategories()));
                         ((Category) serializable).setUserId(SessionManager.getInstance().getCurrentUser().getId());
-                        addCategory((Category) serializable);
+                        addCategory((Category) serializable, SessionManager.getInstance().getUserCategories());
                     }
                 }
 

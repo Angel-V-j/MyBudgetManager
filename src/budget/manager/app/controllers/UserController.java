@@ -14,10 +14,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static budget.manager.app.controllers.CategoryController.deleteUserCategories;
+import static budget.manager.app.controllers.TransactionController.deleteUserTransactions;
+
 public class UserController {
 
     public static boolean addUser(String username, String password, Currency currency) {
-        String query = "INSERT INTO transactions (username, user_password, currency) " +
+        String query = "INSERT INTO users (username, user_password, currency) " +
                 "VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement =
@@ -39,7 +42,7 @@ public class UserController {
     }
 
     private static boolean editUser(User user, String column, String value) {
-        String query = "UPDATE transactions " +
+        String query = "UPDATE users " +
                 "SET " + column + " = ? " +
                 "WHERE id = ?";
 
@@ -68,11 +71,15 @@ public class UserController {
         String query = "DELETE FROM users " +
                 "WHERE id = ?";
 
+        int id = user.getId();
         try (Connection connection = DatabaseManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, user.getId());
-            if (preparedStatement.executeUpdate() > 0)
+            preparedStatement.setInt(1, id);
+            if (preparedStatement.executeUpdate() > 0) {
+                deleteUserTransactions(SessionManager.getInstance().getUserTransactions());
+                deleteUserCategories(SessionManager.getInstance().getUserCategories());
                 return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -106,8 +113,8 @@ public class UserController {
                 "FROM users " +
                 "WHERE username = ?";
 
-        try (Connection connection = DatabaseManager.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement =
+                     DatabaseManager.getInstance().getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, username);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

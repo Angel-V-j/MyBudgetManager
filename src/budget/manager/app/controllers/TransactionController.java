@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static budget.manager.app.controllers.CategoryController.searchCategoryByName;
-import static budget.manager.app.util.SqlUtil.getLastTransactionId;
+import static budget.manager.app.util.SqlUtil.*;
 
 public class TransactionController {
     public TransactionController() {
@@ -23,18 +23,19 @@ public class TransactionController {
     public static boolean addTransaction(int userId, int categoryId, double amount, Currency currency,
                                          LocalDate date, String description, List<Transaction> transactions) {
         String query = "INSERT INTO transactions (user_id, category_id, amount, currency, date, description) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "VALUES (?,?,?,?,?,?)";
+        String s = currency.name();
 
         try (Connection connection = DatabaseManager.getInstance().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, categoryId);
             preparedStatement.setDouble(3, amount);
-            preparedStatement.setString(4, String.valueOf(currency));
+            preparedStatement.setString(4, s);
             preparedStatement.setDate(5, java.sql.Date.valueOf(date));
             preparedStatement.setString(6, description);
             if (preparedStatement.executeUpdate() > 0) {
-                transactions.add(new TransactionFactory().create(getLastTransactionId(connection), userId,
+                transactions.add(new TransactionFactory().create(getLastId(connection, TRANSACTION_TABLE_NAME), userId,
                         categoryId, amount,
                         String.valueOf(currency), date,
                         description));
@@ -82,8 +83,22 @@ public class TransactionController {
 
     public static boolean removeTransaction(int id, List<Transaction> transactions) {
         transactions.removeIf(transaction -> transaction.getId() == id);
+        return removeTransaction(id);
+    }
 
-        String query = "DELETE FROM categories " +
+    public static boolean removeTransaction(Transaction transaction, List<Transaction> transactions) {
+        transactions.remove(transaction);
+        return removeTransaction(transaction.getId());
+    }
+
+    public static void deleteUserTransactions(List<Transaction> transactions) {
+        for (Transaction transaction : transactions) {
+            removeTransaction(transaction.getId());
+        }
+    }
+
+    private static boolean removeTransaction(int id) {
+        String query = "DELETE FROM transactions " +
                 "WHERE id = ?";
 
         try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)){
@@ -95,10 +110,6 @@ public class TransactionController {
         }
 
         return false;
-    }
-
-    public static boolean removeTransaction(Transaction transaction, List<Transaction> transactions) {
-        return removeTransaction(transaction.getId(), transactions);
     }
 
 //    public static boolean removeTransactionsOfUser(int userId, List<Transaction> transactions) {

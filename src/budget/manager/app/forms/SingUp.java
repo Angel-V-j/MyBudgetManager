@@ -37,7 +37,6 @@ public class SingUp extends JFrame {
                             if (Arrays.equals(password, jPasswordField.getPassword())) {
                                 if (addUser(username, String.valueOf(password), Currency.valueOf(String.
                                         valueOf(jComboBoxCurrency.getSelectedItem())))){
-                                    saveUsers();
                                     new Login();
                                     showMessageDialog(null,"You have successfully sign upped!","SignUp",JOptionPane.INFORMATION_MESSAGE);
                                     dispose();

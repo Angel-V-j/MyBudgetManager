@@ -58,25 +58,8 @@ public class SessionManager {
         return userTransactions;
     }
 
-    public List<Category> getUserCategories() {
+    public ArrayList<Category> getUserCategories() {
         return userCategories;
-    }
-
-    private ArrayList<Category> setDefaultCategories() {
-        CategoryFactory factory = new CategoryFactory();
-        return new ArrayList<Category>(Arrays.asList(factory.create(0,-1,"Salary", true),
-                factory.create(1,-1,"Bonus", true),
-                factory.create(2,-1,"Investments", true),
-                factory.create(3,-1,"Government Benefits", true),
-                factory.create(4,-1,"Gifts", true),
-                factory.create(5,-1,"Food & Groceries", false),
-                factory.create(6,-1,"Rent/Mortgage", false),
-                factory.create(7,-1,"Utilities", false),
-                factory.create(8,-1,"Cloths", false),
-                factory.create(9,-1,"Entertainment", false),
-                factory.create(10,-1,"Insurance", false),
-                factory.create(11,-1,"Debt Payment", false),
-                factory.create(12,-1,"HealthCare", false)));
     }
 }
 

@@ -1,5 +1,6 @@
 package budget.manager.app.forms;
 
+import budget.manager.app.managers.SessionManager;
 import budget.manager.app.models.*;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class TransactionCreator extends JFrame {
 
     private LocalDate localDate = null;
 
-    public TransactionCreator(User user, ArrayList<Category> categories, JTable table) {
+    public TransactionCreator(User user,ArrayList<Transaction> transactions, ArrayList<Category> categories, JTable table) {
         init(categories);
         createTransactionButton.addActionListener(new ActionListener() {
             @Override
@@ -41,9 +42,13 @@ public class TransactionCreator extends JFrame {
                 Category category = (Category) categoryPicker.getSelectedItem();
                 localDate = getDate();
                 try {
-                    createTransactionButtonActionPerformed(addTransaction(user.getId(), category.getId(),
-                                    Double.parseDouble(textFAmount.getText()), localDate,
-                                    textAreaDescription.getText()), table, "created");
+                    createTransactionButtonActionPerformed(addTransaction(user.getId(),
+                                    category.getId(),
+                                    Double.parseDouble(textFAmount.getText()),
+                                    user.getCurrency(),
+                                    localDate,
+                                    textAreaDescription.getText(),
+                                    transactions), table, "created");
                 } catch (NumberFormatException ex) {
                     showMessageDialog(null, "Error "+ex.getMessage() + "\nYou can enter only numbers", "Error! Not Numeric Amount", JOptionPane.ERROR_MESSAGE);
                 }
@@ -66,6 +71,7 @@ public class TransactionCreator extends JFrame {
                     createTransactionButtonActionPerformed(editTransaction(transaction, new TransactionFactory().create(transaction.getId(), transaction.getUserId(),
                                     category.getId(),
                                     Double.parseDouble(textFAmount.getText()),
+                                    String.valueOf(transaction.getCurrency()),
                                     localDate, textAreaDescription.getText())),
                                     table, "edited");
                 } catch (NumberFormatException ex) {
@@ -144,7 +150,6 @@ public class TransactionCreator extends JFrame {
     private void createTransactionButtonActionPerformed(boolean condition, JTable table, String type) {
         if (localDate.isBefore(LocalDate.now()) || localDate.isEqual(LocalDate.now())) {
             if (condition) {
-                saveTransactions();
                 table.setModel(new TransactionTableModel());
                 showMessageDialog(null, "You have successfully " + type + " your transaction!","Transaction " + type, JOptionPane.INFORMATION_MESSAGE);
                 dispose();

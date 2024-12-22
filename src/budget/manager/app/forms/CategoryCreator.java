@@ -6,6 +6,7 @@ import budget.manager.app.models.CategoryFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import static budget.manager.app.controllers.CategoryController.*;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -22,12 +23,12 @@ public class CategoryCreator extends JFrame {
     private JRadioButton radioButtonIsInc;
     private JRadioButton radioButtonIsExp;
 
-    public CategoryCreator() {
+    public CategoryCreator(ArrayList<Category> categories) {
         init();
         createCategoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createCategoryButtonActionPerformed(addCategory(textFieldCatName.getText(), radioButtonIsInc.isSelected()), "created");
+                createCategoryButtonActionPerformed(addCategory(textFieldCatName.getText(), radioButtonIsInc.isSelected(), categories), "created");
             }
         });
     }
@@ -79,7 +80,6 @@ public class CategoryCreator extends JFrame {
             if (radioButtonIsInc.isSelected() || radioButtonIsExp.isSelected()) {
                 if (condition) {
                     showMessageDialog(null, "Category " + string + "!");
-                    saveCategories();
                     dispose();
                 } else {
                     showMessageDialog(null, "Something went wrong!");
