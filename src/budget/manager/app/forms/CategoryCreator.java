@@ -1,5 +1,6 @@
 package budget.manager.app.forms;
 
+import budget.manager.app.managers.SessionManager;
 import budget.manager.app.models.Category;
 import budget.manager.app.models.CategoryFactory;
 
@@ -28,7 +29,8 @@ public class CategoryCreator extends JFrame {
         createCategoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createCategoryButtonActionPerformed(addCategory(textFieldCatName.getText(), radioButtonIsInc.isSelected(), categories), "created");
+                createCategoryButtonActionPerformed(addCategory(SessionManager.getInstance().getCurrentUser().getId(),
+                        textFieldCatName.getText(), radioButtonIsInc.isSelected(), categories), "created");
             }
         });
     }

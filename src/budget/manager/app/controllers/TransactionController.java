@@ -182,13 +182,13 @@ public class TransactionController {
         return transactionsFromToDate;
     }
 
-    public static ArrayList<Transaction> loadTransactionsToList() {
+    public static ArrayList<Transaction> loadTransactionsToList(int userId) {
         ArrayList<Transaction> transactions = new ArrayList<>();
         String query = "SELECT * FROM transactions WHERE user_id = ?";
 
         try (Connection connection = DatabaseManager.getInstance().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, SessionManager.getInstance().getCurrentUser().getId());
+            preparedStatement.setInt(1, userId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next())

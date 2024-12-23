@@ -19,6 +19,8 @@ import java.util.Arrays;
 import static budget.manager.app.controllers.CategoryController.*;
 import static budget.manager.app.controllers.TransactionController.*;
 import static budget.manager.app.controllers.UserController.*;
+import static budget.manager.app.services.csv.DataExporter.exportData;
+import static budget.manager.app.services.csv.DataImporter.importData;
 import static budget.manager.app.util.BalanceUtil.*;
 import static budget.manager.app.util.DateUtil.stringToDate;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -222,7 +224,7 @@ public class Main extends JFrame {
 
                 if ((transaction = checkIdTextBox(traId, transaction)) != null) {
                     new TransactionCreator(transaction,
-                            (ArrayList<Category>) SessionManager.getInstance().getUserCategories(),
+                            SessionManager.getInstance().getUserCategories(),
                             jTableTransactions);
                     jTextFieldEditTra.setText("");
                 } else {
@@ -418,71 +420,5 @@ public class Main extends JFrame {
         jTextFieldExpense.setText(String.format("%.2f", calculateExpenses(transactions)));
         jTextFieldIncome.setText(String.format("%.2f", calculateIncome(transactions)));
         jTextFieldBalance.setText(String.format("%.2f", calculateBalance(transactions)));
-    }
-
-    private void importData(String importType) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select a CSV file to import");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
-        int result = fileChooser.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            try {
-                ArrayList<Serializable> list = (ArrayList<Serializable>) new CSVReader().read(selectedFile.
-                        getAbsolutePath(), importType);
-                for (Serializable serializable : list) {
-                    if (serializable instanceof Transaction) {
-                        ((Transaction) serializable).setUserId(SessionManager.getInstance().getCurrentUser().getId());
-                        addTransaction((Transaction) serializable, SessionManager.getInstance().getUserTransactions());
-                    } else if (serializable instanceof Category) {
-                        ((Category) serializable).setUserId(SessionManager.getInstance().getCurrentUser().getId());
-                        addCategory((Category) serializable, SessionManager.getInstance().getUserCategories());
-                    }
-                }
-
-                JOptionPane.showMessageDialog(null, "CSV file imported successfully!",
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Failed to import CSV file: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void exportData(ArrayList<? extends Serializable> data, String defaultFileName) {
-        if (data == null || data.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No data to export!",
-                    "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        JFileChooser directoryChooser = new JFileChooser();
-        directoryChooser.setDialogTitle("Select a directory to save the file");
-        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int result = directoryChooser.showSaveDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedDirectory = directoryChooser.getSelectedFile();
-
-            String fileName = JOptionPane.showInputDialog(null,
-                    "Enter the file name (without extension):", defaultFileName);
-            if (fileName == null || fileName.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "File name cannot be empty!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String filePath = new File(selectedDirectory, fileName + ".csv").getAbsolutePath();
-
-            try {
-                new CSVWriter().write(data, filePath);
-                JOptionPane.showMessageDialog(null, "Data exported successfully to " + filePath,
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Failed to export data: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 }

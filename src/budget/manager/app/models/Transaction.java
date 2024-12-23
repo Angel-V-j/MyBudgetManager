@@ -69,7 +69,7 @@ public class Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%d,%d,%d,%.2f,%s,%s", id, userId, categoryId, amount, dateToString(date), description);
+        return String.format(Locale.ENGLISH, "%d,%d,%d,%.2f,%s,%s,%s", id, userId, categoryId, amount, currency, dateToString(date), description);
     }
 
     public Currency getCurrency() {

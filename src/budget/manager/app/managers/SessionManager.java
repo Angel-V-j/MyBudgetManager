@@ -30,8 +30,8 @@ public class SessionManager {
         currentUser = searchUserByUsername(username);
         if (currentUser != null) {
             if(currentUser.getPassword().equals(password)){
-                userTransactions = loadTransactionsToList();
-                userCategories = loadCategoriesToList();
+                userTransactions = loadTransactionsToList(currentUser.getId());
+                userCategories = loadCategoriesToList(currentUser.getId());
                 return true;
             }
         }

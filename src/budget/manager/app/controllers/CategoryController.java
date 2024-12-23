@@ -12,7 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static budget.manager.app.util.FileUtil.*;
+import static budget.manager.app.util.SqlUtil.CATEGORY_TABLE_NAME;
+import static budget.manager.app.util.SqlUtil.getLastId;
 
 public class CategoryController {
 
@@ -20,14 +21,28 @@ public class CategoryController {
     }
 
     public static boolean addCategory(Category category, List<Category> categories) {
-        categories.add(category);
-        return saveCategory(category);
+        return addCategory(category.getUserId(), category.getName(), category.isIncome(), categories);
     }
 
-    public static boolean addCategory(String categoryName, boolean isIncome, List<Category> categories) {
-        categories.add(new CategoryFactory().create(getUniqueId(categories), SessionManager.
-                getInstance().getCurrentUser().getId(), categoryName, isIncome));
-        return saveCategory(categories.getLast());
+    public static boolean addCategory(int id, String categoryName, boolean isIncome, List<Category> categories) {
+        String query = "INSERT INTO categories (user_id, name, is_income) " +
+                "VALUES (?, ?, ?)";
+
+        try (Connection connection = DatabaseManager.getInstance().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1, id);
+            preparedStatement.setString(2, categoryName);
+            preparedStatement.setBoolean(3, isIncome);
+            if (preparedStatement.executeUpdate() > 0) {
+                categories.add(new CategoryFactory().create(getLastId(connection,CATEGORY_TABLE_NAME),
+                        id, categoryName, isIncome));
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     public static boolean editCategory(Category category, Category editedCategory) {
@@ -117,34 +132,14 @@ public class CategoryController {
         return types;
     }
 
-    public static boolean saveCategory(Category category) {
-        String query = "INSERT INTO categories (user_id, name, is_income) " +
-                "VALUES (?, ?, ?)";
-        int userId = category.getUserId();
-        String name = category.getName();
-        boolean isIncome = category.isIncome();
-
-        try (PreparedStatement preparedStatement = DatabaseManager.getInstance().getConnection().prepareStatement(query)){
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setString(2, name);
-            preparedStatement.setBoolean(3, isIncome);
-            if (preparedStatement.executeUpdate() > 0)
-                return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return false;
-    }
-
-    public static ArrayList<Category> loadCategoriesToList() {
+    public static ArrayList<Category> loadCategoriesToList(int userId) {
         ArrayList<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM categories " +
                 "WHERE user_id = ? OR user_id = -1";
 
         try (Connection connection = DatabaseManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, SessionManager.getInstance().getCurrentUser().getId());
+            preparedStatement.setInt(1, userId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next())
@@ -156,5 +151,25 @@ public class CategoryController {
         }
 
         return categories;
+    }
+
+    public static Category getCategoryById(int id) {
+        String query = "SELECT * FROM categories " +
+                "WHERE id = ?";
+
+        try (Connection connection = DatabaseManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next())
+                    return new CategoryFactory().createFromRSet(resultSet);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
