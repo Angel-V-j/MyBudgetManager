@@ -62,7 +62,7 @@ public class DatabaseInitializer {
                             (-1, 'Entertainment', 0),
                             (-1, 'Insurance', 0),
                             (-1, 'Debt Payment', 0),
-                            (-1, 'HealthCare', 0);
+                            (-1, 'Health Care', 0);
                 """;
 
     public static void initDb(Connection connection) throws SQLException {

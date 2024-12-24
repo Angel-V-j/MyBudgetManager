@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import static budget.manager.app.controllers.CategoryController.*;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class CategoryCreator extends JFrame {
+public class CategoryCreator extends JDialog {
     private JPanel jPanelCreateTra;
     private JPanel jPanelRButtonExp;
     private JPanel jPanelCategory;
@@ -25,6 +25,7 @@ public class CategoryCreator extends JFrame {
     private JRadioButton radioButtonIsExp;
 
     public CategoryCreator(ArrayList<Category> categories) {
+        setModalityType(ModalityType.APPLICATION_MODAL);
         init();
         createCategoryButton.addActionListener(new ActionListener() {
             @Override
@@ -33,6 +34,7 @@ public class CategoryCreator extends JFrame {
                         textFieldCatName.getText(), radioButtonIsInc.isSelected(), categories), "created");
             }
         });
+        setVisible(true);
     }
 
     public CategoryCreator(Category category) {
@@ -51,7 +53,7 @@ public class CategoryCreator extends JFrame {
                         category.getUserId(), textFieldCatName.getText(), radioButtonIsInc.isSelected())), "edited");
             }
         });
-
+        setVisible(true);
     }
 
     private void init() {
@@ -60,7 +62,6 @@ public class CategoryCreator extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(320,400);
         setLocationRelativeTo(null);
-        setVisible(true);
 
         createCategoryButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -78,7 +79,7 @@ public class CategoryCreator extends JFrame {
     }
 
     private void createCategoryButtonActionPerformed(boolean condition, String string) {
-        if (!textFieldCatName.getText().equals("")) {
+        if (!textFieldCatName.getText().isEmpty()) {
             if (radioButtonIsInc.isSelected() || radioButtonIsExp.isSelected()) {
                 if (condition) {
                     showMessageDialog(null, "Category " + string + "!");

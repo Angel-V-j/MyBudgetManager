@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 public class SqlUtil {
     public static final int NOT_VALID_ID = -2;
+    public static final int DEFAULT_USER_ID = -1;
     public static final String TRANSACTION_TABLE_NAME = "transactions";
     public static final String CATEGORY_TABLE_NAME = "categories";
     public static final String USER_TABLE_NAME = "users";

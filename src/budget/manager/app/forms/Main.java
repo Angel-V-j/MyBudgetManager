@@ -23,6 +23,8 @@ import static budget.manager.app.services.csv.DataExporter.exportData;
 import static budget.manager.app.services.csv.DataImporter.importData;
 import static budget.manager.app.util.BalanceUtil.*;
 import static budget.manager.app.util.DateUtil.stringToDate;
+import static budget.manager.app.util.SqlUtil.CATEGORY_TABLE_NAME;
+import static budget.manager.app.util.SqlUtil.TRANSACTION_TABLE_NAME;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -388,11 +390,21 @@ public class Main extends JFrame {
         jButtonImportTra.addActionListener(importFile);
         jButtonImportCat.addActionListener(importFile);
 
-        ActionListener exportFile = e -> exportData(SessionManager.getInstance().getUserTransactions(),
-                ((JButton) e.getSource()).getName() + currentUser.getUsername().toUpperCase());
+        jButtonExportTra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportData(SessionManager.getInstance().getUserTransactions(),
+                        TRANSACTION_TABLE_NAME + currentUser.getUsername().toUpperCase());
+            }
+        });
 
-        jButtonExportTra.addActionListener(exportFile);
-        jButtonExportCat.addActionListener(exportFile);
+        jButtonExportCat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportData(SessionManager.getInstance().getUserCategories(),
+                        CATEGORY_TABLE_NAME + currentUser.getUsername().toUpperCase());
+            }
+        });
     }
 
     private <T extends Serializable> T checkIdTextBox(String stringId, Serializable object) {
