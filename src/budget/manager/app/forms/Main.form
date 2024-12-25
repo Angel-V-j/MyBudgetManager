@@ -190,7 +190,9 @@
                   </vspacer>
                   <scrollpane id="7b372">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="-1" height="200"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <background color="-3364123"/>
@@ -200,12 +202,14 @@
                       <component id="5860e" class="javax.swing.JTable" binding="jTableAllTransactions">
                         <constraints/>
                         <properties>
+                          <autoCreateRowSorter value="true"/>
                           <autoResizeMode value="4"/>
                           <background color="-2104859"/>
                           <dragEnabled value="false"/>
+                          <fillsViewportHeight value="true"/>
                           <maximumSize width="2147483647" height="2147483647"/>
-                          <preferredScrollableViewportSize width="-1" height="2000000000"/>
-                          <preferredSize width="450" height="175"/>
+                          <preferredScrollableViewportSize width="-1" height="175"/>
+                          <preferredSize width="450" height="2000000000"/>
                           <selectionBackground color="-3703067"/>
                         </properties>
                       </component>
@@ -967,8 +971,8 @@
                           <dragEnabled value="false"/>
                           <fillsViewportHeight value="true"/>
                           <maximumSize width="2147483647" height="2147483647"/>
-                          <preferredScrollableViewportSize width="-1" height="2000000000"/>
-                          <preferredSize width="450" height="190"/>
+                          <preferredScrollableViewportSize width="-1" height="190"/>
+                          <preferredSize width="450" height="2000000000"/>
                           <selectionBackground color="-3703067"/>
                         </properties>
                       </component>
